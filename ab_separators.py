@@ -1,7 +1,4 @@
 import networkx as nx
-import graphs
-from itertools import product
-
 
 def min_ab_separators(G, a, b):
     """
@@ -12,7 +9,7 @@ def min_ab_separators(G, a, b):
     :param G: Subject graph
     :param a: start node
     :param b: end node
-    :return: all minimal ab-seperators
+    :return: all minimal ab-separators (as list of sets) 
     """
     n = len(G)
     if type(a) is not set:
@@ -52,7 +49,7 @@ def min_ab_separators(G, a, b):
     L = {k: [(a, N(a) - I(N(a), Cb))]}
     for i in range(1, n - 2):
         L[i] = []
-    seperators = [N(a) - I(N(a), Cb)]
+    separators = [N(a) - I(N(a), Cb)]
 
     while k <= n - 3 and len(Cb) != 0:
         for p, S in L[k]:
@@ -64,11 +61,14 @@ def min_ab_separators(G, a, b):
 
                     if len(Cb) != 0:
                         S_new = SuN_plus - I(SuN_plus, Cb)
-                        if S_new not in seperators:
+                        if S_new not in separators:
                             L[k + 1].append((x, S_new))
-                            seperators.append(S_new)
+                            separators.append(S_new)
         k += 1
-        if not L[k]:
+        if k not in L:
             break
 
-    return seperators
+    if separators == [set()]:
+        return []
+    else:
+        return separators
